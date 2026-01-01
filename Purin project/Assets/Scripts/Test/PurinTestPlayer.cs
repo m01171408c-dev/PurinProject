@@ -2,10 +2,15 @@ using UnityEngine;
 
 public class PurinTestPlayer : PlayerObject
 {
+    [SerializeField] private CinemachineTest _cinemachineTest;
     private void Start()
     {
         base.Init();
         base.EnableInput();
+        if (_cinemachineTest != null)
+        {
+            _cinemachineTest.SetTarget(this.transform.GetChild(0));
+        }
     }
 
     private void Update()
