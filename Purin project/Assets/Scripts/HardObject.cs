@@ -2,28 +2,93 @@ using UnityEngine;
 
 public class HardObject : MonoBehaviour
 {
+    public enum HardObjectState
+    {
+        Inactive,
+        Active,
+        Shocked,
+        Destroyed
+    }
     private float _minSpeed = 1.0f;
     private float _maxSpeed = 5.0f;
     private float _acceleration = 1.0f;
 
-    private bool _isAction = false;
-    private bool _isDestroyed = false;
     private float _currentSpeed = 0.0f;
+    private HardObjectState _currentState = HardObjectState.Inactive;
 
-    [SerializeField] private GameObject _model;
+    private Vector3 _direction = Vector3.forward;
+    private GameObject _model = null;
+    private float _shockTimer = 0f;
+
+    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.Player };
+    private CollisionListener _collisionListener = null;
 
     public float CurrentSpeed => _currentSpeed;
-    public bool IsDestroyed => _isDestroyed;
-    public void StartAction()
+    public HardObjectState CurrentState => _currentState;
+
+    private void OnCollide(string tag, Collider target)
     {
-        _isAction = true;
+        switch (tag)
+        {
+            case GameTag.Player:
+            case GameTag.Enemy:
+                {
+                    Debug.Log(this.name + " OnCollide with Purin");
+                    ShockAndDown();
+                }
+                break;
+            case GameTag.HardObject:
+                {
+                    Debug.Log(this.name + " OnCollide with " + tag);
+                    DirectionTurn();
+                }
+                break;
+            default:
+                Debug.LogWarning(this.name + " OnCollide with unknown tag: " + tag);
+                break;
+        }
+    }
+    public void StartAction(Vector3 direction)
+    {
+        if (_currentState != HardObjectState.Inactive)
+        {
+            Debug.LogWarning(this.name + " StartAction called but current state is not Inactive.");
+            return;
+        }
+        _model = transform.GetChild(0).gameObject;
+        if (_model == null)
+        {
+            Debug.LogError(this.name + " Model is not found.");
+            return;
+        }
+        _collisionListener = _model.AddComponent<CollisionListener>();
+        _collisionListener.SetUp(ref _targetListenTags, OnCollide);
+        _direction = direction.normalized;
+        _currentState = HardObjectState.Active;
     }
 
     public void ActionUpdate()
     {
-        if (!_isAction) return;
+        if (_currentState == HardObjectState.Shocked)
+        {
+            _shockTimer += Time.deltaTime;
+            if (_shockTimer >= 3.0f) // 仮。ショック状態の継続時間を外部から渡す
+            {
+                StopAndDestroy();
+            }
+            return;
+        }
+        if (_currentState != HardObjectState.Active)
+        {
+            return;
+        }
+        if (_model == null)
+        {
+            Debug.LogError(this.name + " Model is not found.");
+            return;
+        }
+
         var prePosition = transform.position;
-        var direction = transform.forward; // 仮。初期方向を外部から渡す
         if (_currentSpeed < _minSpeed)
         {
             _currentSpeed = _minSpeed;
@@ -37,7 +102,7 @@ public class HardObject : MonoBehaviour
             }
         }
 
-        transform.position += direction * _currentSpeed * Time.deltaTime;
+        transform.position += _direction * _currentSpeed * Time.deltaTime;
         var posDelta = transform.position - prePosition;
         var rotateSpeed = posDelta.magnitude / Time.deltaTime;
         var axis = Vector3.Cross(Vector3.up, posDelta.normalized);
@@ -47,9 +112,28 @@ public class HardObject : MonoBehaviour
         _model.transform.rotation = rot;
     }
 
+    public void ShockAndDown()
+    {
+        if (_currentState != HardObjectState.Active)
+        {
+            return;
+        }
+        _shockTimer = 0;
+        _currentState = HardObjectState.Shocked;
+    }
+
     public void StopAndDestroy()
     {
-        _isAction = false;
-        _isDestroyed = true;
+        _shockTimer = 0;
+        _currentState = HardObjectState.Destroyed;
+    }
+
+    public void DirectionTurn()
+    {
+        if (_currentState != HardObjectState.Active && _currentState != HardObjectState.Shocked)
+        {
+            return;
+        }
+        _direction = -_direction;
     }
 }

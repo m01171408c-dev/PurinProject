@@ -6,7 +6,7 @@ public class HardObjectTest : HardObject
     void Start()
     {
         Debug.Log("Foward Direction: " + transform.forward);
-        StartAction();
+        StartAction(Vector3.forward);
     }
 
     // Update is called once per frame
