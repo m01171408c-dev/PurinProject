@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CinemachineTest : MonoBehaviour
 {
-    [SerializeField] private CinemachineCamera _virtualCamera;
+    [SerializeField] private Transform _virtualCamera;
     private Transform _followTarget = null;
     private Vector3 _distanceVec = Vector3.zero;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,9 +21,6 @@ public class CinemachineTest : MonoBehaviour
     private void Update()
     {
         if (_followTarget == null) return;
-        if((_virtualCamera.transform.position - _followTarget.position) != _distanceVec)
-        {
-            _virtualCamera.transform.position = _followTarget.position + _distanceVec;
-        }
+        _virtualCamera.transform.position = _followTarget.position + _distanceVec;
     }
 }

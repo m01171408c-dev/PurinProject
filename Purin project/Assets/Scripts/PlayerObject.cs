@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerObject : MonoBehaviour
@@ -5,9 +6,10 @@ public class PlayerObject : MonoBehaviour
     [SerializeField] private MainGameInput _input = null;
     [SerializeField] private GameObject _purinPrefab;
     [SerializeField] private PurinConfig _purinConfig = null;
-    private const string _playerTag = "Player";
+    [SerializeField] private CinemachineCamera _virtualCamera = null; // ムービー用カメラとの切り替えのためCinemachineCamera指定
     private Purin _myPurin = null;
     private bool _isEnabled = false;
+    private Vector3 _cameraDistanceVec = Vector3.zero;
 
     public Purin GetMyPurin => _myPurin;
 
@@ -29,6 +31,11 @@ public class PlayerObject : MonoBehaviour
             Debug.LogError(this.name + " Purin Config is not assigned.");
             return;
         }
+        if (_virtualCamera == null) 
+        {
+            Debug.LogError(this.name + " CinemachineCamera is not assigned.");
+            return;
+        }
         _purinPrefab = GameObject.Instantiate(_purinPrefab, this.transform);
         _purinPrefab.transform.localPosition = Vector3.zero;
         _purinPrefab.transform.parent = this.transform;
@@ -39,6 +46,8 @@ public class PlayerObject : MonoBehaviour
             return;
         }
         _myPurin.SetUp(ref _purinConfig);
+        _cameraDistanceVec = _virtualCamera.transform.position - _myPurin.transform.position;
+
     }
 
     public void EnableInput()
@@ -56,65 +65,20 @@ public class PlayerObject : MonoBehaviour
 
     public void PlayerUpdate()
     {
+        if(_virtualCamera != null && _myPurin != null)
+        {
+            // 操作の有効無効に関わらずカメラは追従させる
+            _virtualCamera.transform.position = _myPurin.transform.position + _cameraDistanceVec;
+        }
         if (!_isEnabled)
         {
             return;
         }
-        //ColiisionUpdate();
+
         if (_myPurin != null)
         {
             _myPurin.SetHandleMovement(_input.Purin.Handle.ReadValue<float>());
             _myPurin.StateUpdate();
         }
     }
-
-#if false // 当たり判定はCollisionListenerで処理するため不要
-    private void CollideObject(Vector3 collidePosition)
-    {
-        if (_myPurin == null)
-        {
-            Debug.LogError(this.name + " Purin component is not assigned.");
-            return;
-        }
-        Vector3 knockbackDirection = (_myPurin.transform.position - collidePosition).normalized;
-        _myPurin.KnockBack(ref knockbackDirection);
-    }
-    private void ColiisionUpdate()
-    {
-        if (_myPurin == null)
-        {
-            Debug.LogError(this.name + " Purin component is not assigned.");
-            return;
-        }
-        var center = _myPurin.transform.position + new Vector3(0, 0, 0);
-        var halfExtents = new Vector3(2,2,2);
-        Collider[] hits = Physics.OverlapBox(center, halfExtents, _myPurin.transform.rotation);
-        bool isLanding = false;
-        foreach (var hit in hits)
-        {
-            if (hit.tag == _playerTag)
-            {
-                continue;
-            }
-            switch (hit.tag)
-            {
-                case "Object":
-                    Debug.Log(this.name + " hit Object: " + hit.name);
-                    {
-                        CollideObject(hit.transform.position);
-                    }
-                    break;
-                case "Enemy":
-                    Debug.Log(this.name + " hit Enemy: " + hit.name);
-                    break;
-                case "Floor":
-                    isLanding = true;
-                    break;
-                default:
-                    break;
-            }
-        }
-        //_myPurin.SetIsLanding(isLanding);
-    }
-#endif
 }

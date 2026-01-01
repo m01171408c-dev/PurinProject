@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Object
   - Floor
+  - Cream
   layers:
   - Default
   - TransparentFX

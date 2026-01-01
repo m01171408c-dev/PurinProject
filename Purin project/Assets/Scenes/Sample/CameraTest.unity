@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 389369341}
   - component: {fileID: 389369343}
   m_Layer: 0
-  m_Name: CinemachineCamera (1)
+  m_Name: VirtualCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -344,7 +344,6 @@ GameObject:
   m_Component:
   - component: {fileID: 433868990}
   - component: {fileID: 433868989}
-  - component: {fileID: 433868991}
   m_Layer: 0
   m_Name: PurinPlayer
   m_TagString: Untagged
@@ -366,7 +365,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PurinTestPlayer
   _purinPrefab: {fileID: 699376416951153468, guid: f2190a80a808d04469372de363350ee3, type: 3}
   _purinConfig: {fileID: 11400000, guid: d2beb49674e0e58409cfbe6b0957ec0f, type: 2}
-  _cinemachineTest: {fileID: 433868991}
+  _virtualCamera: {fileID: 389369341}
+  _cinemachineTest: {fileID: 0}
 --- !u!4 &433868990
 Transform:
   m_ObjectHideFlags: 0
@@ -382,19 +382,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &433868991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 433868988}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65c6577c3c40723478265343855f0ef9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CinemachineTest
-  _virtualCamera: {fileID: 389369341}
 --- !u!1 &596555991
 GameObject:
   m_ObjectHideFlags: 0

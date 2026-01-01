@@ -16,7 +16,6 @@ public class ColliderTest : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
         Debug.Log(this.name + " OnTriggerEnter with " + other.name);
     }
 

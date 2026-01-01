@@ -21,15 +21,16 @@ public class Purin : MonoBehaviour
 
     private float _handleHorizontal = 0f;
     private PurinState _currentState = PurinState.Standby;
-    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject};
+    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.Cream };
     private CollisionListener _collisionListener = null;
-
+    private bool _hasCream = false;
     public float CurrentSpeed => _currentSpeed;
     public PurinState CurrentState => _currentState;
-    
+
 
     [SerializeField] private Softbody _purinModel;
     [SerializeField] private SoftbodyProperty _purinModelProperty;
+    [SerializeField] private Transform _creamParent;
     private void AutoAccelerate()
     {
         if (_purinConfig == null)
@@ -105,7 +106,7 @@ public class Purin : MonoBehaviour
         }
     }
 
-    protected void HandleMovement()
+    private void HandleMovement()
     {
         if (_purinConfig == null)
         {
@@ -129,6 +130,31 @@ public class Purin : MonoBehaviour
 
         }
         transform.Translate(Vector3.forward * _currentSpeed * Time.deltaTime);
+    }
+
+    private void CreamsInvisible()
+    {
+        if (_creamParent == null)
+        {
+            Debug.LogWarning(this.name + " CreamParent is not assigned.");
+            return;
+        }
+        foreach (Transform cream in _creamParent)
+        {
+            cream.gameObject.SetActive(false);
+        }
+        _hasCream = false;
+    }
+
+    private void ShowMyCream(int index)
+    {
+        if (_creamParent.childCount <= index)
+        {
+            Debug.LogWarning(this.name + " Cream model index is out of range: " + index);
+            return;
+        }
+        _creamParent.GetChild(index).gameObject.SetActive(true);
+        _hasCream = true;
     }
 
     public void StateUpdate()
@@ -204,7 +230,7 @@ public class Purin : MonoBehaviour
 
     private void OnCollide(string tag, Collider target)
     {
-        switch(tag)
+        switch (tag)
         {
             case GameTag.Enemy:
             case GameTag.HardObject:
@@ -212,6 +238,28 @@ public class Purin : MonoBehaviour
                     Debug.Log(this.name + " OnCollide with " + tag);
                     Vector3 knockbackDir = (transform.position - target.transform.position).normalized;
                     KnockBack(ref knockbackDir);
+                    // Todo:ƒ‰ƒCƒtŒ¸­ˆ—
+                }
+                break;
+            case GameTag.Cream:
+                {
+                    Debug.Log(this.name + " OnCollide with " + tag);
+                    if(_hasCream)
+                    {
+                        Debug.Log(this.name + " Already has cream. Cannot take more.");
+                        break;
+                    }
+                    if (_creamParent == null)
+                    {
+                        Debug.LogWarning(this.name + " CreamParent is not assigned.");
+                        break;
+                    }
+                    CreamsInvisible();
+                    if (target.TryGetComponent<Cream>(out var cream))
+                    {
+                        int creamModelIndex = cream.PurinTakeCream();
+                        ShowMyCream(creamModelIndex);
+                    }
                 }
                 break;
             default:
