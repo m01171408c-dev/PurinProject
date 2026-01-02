@@ -12,16 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9426e9541e831d4f8fb5d35fae91941, type: 3}
   m_Name: PurinConfig
   m_EditorClassIdentifier: Assembly-CSharp::PurinConfig
+  _life: 3
   _acceleration: 0.1
-  _maxSpeed: 10
-  _minSpeed: 2
+  _maxSpeed: 20
+  _minSpeed: 8
   _deceleration: 0.1
   _turnSpeed: 200
   _breakSpeed: 0.02
-  _knockbackDistance: 6
+  _knockbackDistance: 12
   _knckbackTime: 1
   _downTime: 1
-  _attackRaduis: 4
+  _attackRaduis: 16
   _attackTime: 1
   _creamAttackPrefab: {fileID: 8446608553786532089, guid: e4909b19aa4cc7b4a95d487695298a0e, type: 3}
-  _creamAttackPrefabSize: 2
+  _creamAttackPrefabSize: 8
+  _spawnEffectPrefab: {fileID: 5448166041843734448, guid: 3e0da758622ed304d954d9ed259ac722, type: 3}
+  _damageEffectPrefab: {fileID: 4778296385524413938, guid: 2092d031e6e00c9459f660ce6170253b, type: 3}
+  _deadEffectPrefab: {fileID: 5128829918751854935, guid: efcfb8d4c931d50498b0d072d2af22f1, type: 3}

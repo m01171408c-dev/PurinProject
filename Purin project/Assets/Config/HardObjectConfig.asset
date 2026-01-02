@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 669fbda855605684eb19a17fb7839db1, type: 3}
   m_Name: HardObjectConfig
   m_EditorClassIdentifier: Assembly-CSharp::HardObjectConfig
-  _minSpeedRandom: 1
-  _maxSpeedRandom: 10
+  _minSpeedRandom: 10
+  _maxSpeedRandom: 18
   _minAccelerationRandom: 1
   _maxAccelerationRandom: 5
   _minSpawnInterval: 2

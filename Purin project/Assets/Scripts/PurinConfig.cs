@@ -3,6 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PurinConfig", menuName = "Scriptable Objects/PurinConfig")]
 public class PurinConfig : ScriptableObject
 {
+    [Header("プリンのライフ")]
+    [SerializeField] private int _life = 3;
+    public int Life => _life;
     [Header("プリンの速度設定")]
     [SerializeField] private float _acceleration = 0.1f;
     [SerializeField] private float _maxSpeed = 5.0f;
@@ -35,4 +38,12 @@ public class PurinConfig : ScriptableObject
     public float AttackTime => _attackTime;
     public GameObject CreamAttackPrefab => _creamAttackPrefab;
     public float CreamAttackPrefabSize => _creamAttackPrefabSize;
+
+    [Header("プリンのエフェクト")]
+    [SerializeField] private GameObject _spawnEffectPrefab = null;
+    [SerializeField] private GameObject _damageEffectPrefab = null;
+    [SerializeField] private GameObject _deadEffectPrefab = null;
+    public GameObject SpawnEffectPrefab => _spawnEffectPrefab;
+    public GameObject DamageEffectPrefab => _damageEffectPrefab;
+    public GameObject DeadEffectPrefab => _deadEffectPrefab;
 }

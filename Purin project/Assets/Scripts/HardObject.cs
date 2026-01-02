@@ -19,6 +19,7 @@ public class HardObject : MonoBehaviour
     private Vector3 _direction = Vector3.forward;
     private GameObject _model = null;
     private float _shockTimer = 0f;
+    private float _activeTimer = 0f;
 
     private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.Player };
     private CollisionListener _collisionListener = null;
@@ -87,7 +88,12 @@ public class HardObject : MonoBehaviour
             Debug.LogError(this.name + " Model is not found.");
             return;
         }
-
+        _activeTimer += Time.deltaTime;
+        if (_activeTimer >= 1 && _collisionListener.IsGrounded == false)
+        {
+            StopAndDestroy(); //êŠO‚Ì‚½‚ßíœ
+            return;
+        }
         var prePosition = transform.position;
         if (_currentSpeed < _minSpeed)
         {

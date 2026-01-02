@@ -1,4 +1,3 @@
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class Purin : MonoBehaviour
@@ -28,8 +27,12 @@ public class Purin : MonoBehaviour
     private float _creamAttackTimer = 0f;
     private string[] _creamAttackListenTags = { GameTag.Enemy, GameTag.HardObject };
     private CollisionListener _creamAttackCollisionListener = null;
+    private int _currentLife = 0;
+    private float _notLandingTime = 0;
+    private bool _isFall = false;
     public float CurrentSpeed => _currentSpeed;
     public PurinState CurrentState => _currentState;
+    public int CurrentLife => _currentLife;
 
 
     [SerializeField] private Softbody _purinModel;
@@ -144,7 +147,7 @@ public class Purin : MonoBehaviour
             Debug.LogError(this.name + " PurinConfig is null in CreamAttack");
             return;
         }
-        var creamAttack = GameObject.Instantiate(_purinConfig.CreamAttackPrefab, transform.position, Quaternion.identity);
+        var creamAttack = GameObject.Instantiate(_purinConfig.CreamAttackPrefab, transform.position, _purinConfig.CreamAttackPrefab.transform.rotation);
         creamAttack.transform.parent = this.transform; creamAttack.transform.localPosition = _creamParent.localPosition;
         creamAttack.transform.localScale = Vector3.one * (_purinConfig.CreamAttackPrefabSize);
         var particles = creamAttack.GetComponentsInChildren<ParticleSystem>();
@@ -236,16 +239,27 @@ public class Purin : MonoBehaviour
                 // Do nothing
                 break;
             case PurinState.Moving:
-                HandleMovement();
+                {
+                    HandleMovement();
+                    CheckDead();
+                }
                 break;
             case PurinState.Knockback:
-                KnockbackUpdate();
+                {
+                    KnockbackUpdate();
+                    CheckDead();
+                }
                 break;
             case PurinState.Down:
-                DownUpdate();
+                {
+                    DownUpdate();
+                    CheckDead();
+                }
                 break;
             case PurinState.Dead:
-                // Do nothing
+                {
+                    FallUpdate();
+                }
                 break;
             default:
                 Debug.LogError(this.name + " Invalid PurinState: " + _currentState);
@@ -253,7 +267,7 @@ public class Purin : MonoBehaviour
         }
     }
 
-    private void ResetStatus()
+    private void ResetSpeedStatus()
     {
         _currentSpeed = 0f;
         _knockbackTimer = 0f;
@@ -261,6 +275,37 @@ public class Purin : MonoBehaviour
         _handleHorizontal = 0f;
         _downTimer = 0f;
         _purinModel?.ResetAnimation();
+    }
+
+    private void CheckDead()
+    {
+        if (GetIsLanding() == false)
+        {
+            _notLandingTime += Time.deltaTime;
+        }
+        else
+        {
+            _notLandingTime = 0;
+        }
+        if (_notLandingTime > 0.5f)
+        {
+            // 0.5•b‚Ì—P—\
+            _isFall = true;
+            Die();
+            return;
+        }
+
+        if (_currentLife <= 0)
+        {
+            Die();
+            _purinModel.gameObject.SetActive(false);
+            if (_purinConfig.DeadEffectPrefab != null)
+            {
+                var deadEffect = GameObject.Instantiate(_purinConfig.DeadEffectPrefab,
+                    transform.position + new Vector3(0, 1, 0), _purinConfig.DeadEffectPrefab.transform.rotation);
+                Destroy(deadEffect, 2f);
+            }
+        }
     }
 
     private void ChangeState(PurinState nextState)
@@ -273,10 +318,10 @@ public class Purin : MonoBehaviour
         switch (nextState)
         {
             case PurinState.Standby:
-                ResetStatus();
+                ResetSpeedStatus();
                 break;
             case PurinState.Moving:
-                ResetStatus();
+                ResetSpeedStatus();
                 {
                     _purinModel?.SetMoving(true);
                 }
@@ -284,13 +329,19 @@ public class Purin : MonoBehaviour
             case PurinState.Knockback:
                 {
                     _purinModel?.Hit();
+                    if (_purinConfig.DamageEffectPrefab != null)
+                    {
+                        var damageEffect = GameObject.Instantiate(_purinConfig.DamageEffectPrefab,
+                            transform.position + new Vector3(0, 1, 0), _purinConfig.DamageEffectPrefab.transform.rotation);
+                        Destroy(damageEffect, 2f);
+                    }
                 }
                 break;
             case PurinState.Down:
-                ResetStatus();
+                ResetSpeedStatus();
                 break;
             case PurinState.Dead:
-                ResetStatus();
+                ResetSpeedStatus();
                 break;
             default:
                 Debug.LogError(this.name + " Invalid PurinState: " + nextState);
@@ -305,10 +356,14 @@ public class Purin : MonoBehaviour
             case GameTag.Enemy:
             case GameTag.HardObject:
                 {
+                    if (_isCreamAttackActive)
+                    {
+                        break;
+                    }
                     Debug.Log(this.name + " OnCollide with " + tag);
                     Vector3 knockbackDir = (transform.position - target.transform.position).normalized;
                     KnockBack(ref knockbackDir);
-                    // Todo:ƒ‰ƒCƒtŒ¸­ˆ—
+                    _currentLife--;
                 }
                 break;
             case GameTag.CreamItem:
@@ -328,7 +383,7 @@ public class Purin : MonoBehaviour
                     if (target.TryGetComponent<Cream>(out var cream))
                     {
                         int creamModelIndex = cream.PurinTakeCream();
-                        if(creamModelIndex < 0)
+                        if (creamModelIndex < 0)
                         {
                             break;
                         }
@@ -336,7 +391,7 @@ public class Purin : MonoBehaviour
                     }
                 }
                 break;
-                case GameTag.CreamAttack:
+            case GameTag.CreamAttack:
                 {
                     bool isMyAttack = false;
                     if (target.gameObject == _creamAttackCollison)
@@ -377,6 +432,16 @@ public class Purin : MonoBehaviour
         }
     }
 
+    private void FallUpdate()
+    {
+        if (_isFall == false)
+        {
+            return;
+        }
+        var fallForce = Vector3.forward * _purinConfig.MaxSpeed + new Vector3(0, -9.8f, 0);
+        transform.Translate(fallForce * Time.deltaTime);
+    }
+
     public bool SetUp(ref PurinConfig purinConfig)
     {
         if (purinConfig == null)
@@ -390,18 +455,33 @@ public class Purin : MonoBehaviour
             Debug.LogError(this.name + " PurinModel is not assigned.");
             return false;
         }
-        if(_creamAttackCollison == null)
+        if (_creamAttackCollison == null)
         {
             Debug.LogError(this.name + " CreamAttackCollision is not assigned.");
             return false;
         }
+        _currentLife = _purinConfig.Life;
         _creamAttackCollison.SetActive(false);
+        var attackCol = _creamAttackCollison.GetComponent<SphereCollider>();
+        if (attackCol != null)
+        {
+            attackCol.radius = _purinConfig.AttackRaduis;
+        }
+        else
+        {
+            Debug.LogError(this.name + " _creamAttackCollison Component is not valid");
+        }
+        if (_purinConfig.SpawnEffectPrefab != null)
+        {
+            var spawnEffect = GameObject.Instantiate(_purinConfig.SpawnEffectPrefab, transform.position + new Vector3(0, 1, 0), _purinConfig.SpawnEffectPrefab.transform.rotation);
+            Destroy(spawnEffect, 2f);
+        }
         _purinModel.SetUp(ref _purinModelProperty);
         _collisionListener = gameObject.AddComponent<CollisionListener>();
         _collisionListener.SetUp(ref _targetListenTags, OnCollide);
         _creamAttackCollisionListener = _creamAttackCollison.AddComponent<CollisionListener>();
         _creamAttackCollisionListener.SetUp(ref _creamAttackListenTags, CreamAttackOnCollide);
-        ResetStatus();
+        ResetSpeedStatus();
         ChangeState(PurinState.Standby);
         return true;
     }
@@ -412,7 +492,7 @@ public class Purin : MonoBehaviour
         {
             return;
         }
-        ResetStatus();
+        ResetSpeedStatus();
         ChangeState(PurinState.Moving);
     }
 
@@ -438,7 +518,7 @@ public class Purin : MonoBehaviour
             Debug.LogWarning(this.name + " Purin is in other state. Cannot knockback.");
             return;
         }
-        ResetStatus();
+        ResetSpeedStatus();
         _knockbackDirection = knckbackDir.normalized;
         _knockbackDirection.y = 0;
         ChangeState(PurinState.Knockback);
@@ -456,6 +536,7 @@ public class Purin : MonoBehaviour
 
     public void Die()
     {
+        Debug.Log(this.name + " Purin is Dead");
         ChangeState(PurinState.Dead);
     }
 

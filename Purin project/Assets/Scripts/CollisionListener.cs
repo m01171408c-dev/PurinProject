@@ -14,6 +14,7 @@ public class CollisionListener : MonoBehaviour
         _thisTag = gameObject.tag;
         _onTriggerEnter = onTriggerEnter;
         _targetTag = targets;
+        _isGrounded = true; // Å‰‚Í’…’n‚Ì‘O’ñ
     }
     private void OnTriggerEnter(Collider other)
     {

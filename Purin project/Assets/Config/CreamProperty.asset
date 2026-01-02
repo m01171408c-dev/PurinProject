@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CreamConfig
   _lifetime: 5
   _creamPrefab: {fileID: 4474996194139888616, guid: 247f56f61cb189e4da713ea0f0991c72, type: 3}
-  _minSpawnInterval: 2
-  _maxSpawnInterval: 10
+  _minSpawnInterval: 1
+  _maxSpawnInterval: 2
   _maxCreamItemCount: 3

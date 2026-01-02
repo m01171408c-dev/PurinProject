@@ -1,4 +1,7 @@
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Unity.Cinemachine;
+
 
 public class GameMain : MonoBehaviour
 {
@@ -11,6 +14,12 @@ public class GameMain : MonoBehaviour
     }
     public static GameMain Instance { get; private set; }
     [SerializeField] private ObjectMaster _objectMaster = null;
+    [SerializeField] private PlayerObject _playerObject = null;
+    [SerializeField] private GameObject _movieField = null;
+    [SerializeField] private GameObject _gameField = null;
+    [SerializeField] private CinemachineCamera[] _readyMovieCameras = { };
+    [SerializeField] private CinemachineCamera _playerCamera = null;
+    
     private GameState _state;
     private float _gameProgressTime = 0;
     public ObjectMaster ObjectMaster => _objectMaster;
@@ -30,8 +39,8 @@ public class GameMain : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-#if true // 仮。ゲーム開始準備を飛ばす
-        ChangeGameState(GameState.Active);
+#if true // 仮。
+        ChangeGameState(GameState.Ready);
 #endif
     }
 
@@ -46,6 +55,7 @@ public class GameMain : MonoBehaviour
                 break;
             case GameState.Active:
                 {
+                    _playerObject.PlayerUpdate();
                     _objectMaster.MasterUpdate();
                 }
                 break;
@@ -64,14 +74,56 @@ public class GameMain : MonoBehaviour
             case GameState.None:
                 break;
             case GameState.Ready:
+                {
+                    StartReadyMovie();
+                }
                 break;
             case GameState.Active:
+                {
+                    _objectMaster.Setup();
+                    _playerObject.EnableInput();
+                }
                 break;
             case GameState.GameOver:
+                {
+                    _playerObject.DisableInput();
+                }
                 break;
             default:
                 break;
         }
         _state = nextState;
+    }
+
+    private async UniTask ReadyMovieTask()
+    {
+        if(_readyMovieCameras.Length < 2)
+        {
+            Debug.LogError(this.name + " _readyMovieCameras Length is invaild");
+        }
+        _gameField.SetActive(false);
+        _movieField.SetActive(true);
+        foreach(var cam in  _readyMovieCameras)
+        {
+            cam.Priority = 0;
+        }
+        _readyMovieCameras[0].Priority = 1;
+        await UniTask.Delay(1000); // 1秒待つ
+        _readyMovieCameras[0].Priority = 0;
+        _readyMovieCameras[1].Priority = 1;
+        await UniTask.Delay(3000);
+        _gameField.SetActive(true);
+        _movieField.SetActive(false);
+        _readyMovieCameras[1].Priority = 0;
+        _playerCamera.Priority = 1;
+        await UniTask.Delay(500);
+        _playerObject.Init();
+        await UniTask.Delay(1000);
+    }
+
+    private async void StartReadyMovie()
+    {
+        await ReadyMovieTask();
+        ChangeGameState(GameState.Active);
     }
 }

@@ -147,6 +147,7 @@ public class ObjectMaster : MonoBehaviour
             return;
         }
         var creamPrefab = Instantiate(_creamConfig.CreamPrefab, Vector3.zero, Quaternion.identity);
+        creamPrefab.name = "Cream" + _creams.Count.ToString();
         creamPrefab.transform.position = spawnPositionWorld;
         var creamItem = creamPrefab.AddComponent<Cream>();
         _creams.Add(creamItem);
@@ -178,7 +179,7 @@ public class ObjectMaster : MonoBehaviour
         }
         var instantiateIndex = Random.Range(0, _hardObjectConfig.HardObjectPrefabs.Length);
         var hardObjectPrefab = Instantiate(_hardObjectConfig.HardObjectPrefabs[instantiateIndex], Vector3.zero, Quaternion.identity);
-        var hardObject = new GameObject("HardObject").AddComponent<HardObject>();
+        var hardObject = new GameObject("HardObject" + _objects.Count.ToString()).AddComponent<HardObject>();
         hardObjectPrefab.transform.SetParent(hardObject.transform);
         hardObjectPrefab.transform.localPosition = Vector3.zero;
         hardObject.transform.position = spawnPositionWorld;
