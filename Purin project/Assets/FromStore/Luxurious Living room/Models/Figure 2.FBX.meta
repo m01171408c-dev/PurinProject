@@ -1,0 +1,310 @@
+fileFormatVersion: 2
+guid: 53e03cff08c864843a77e7c81dfd777f
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: arch24_032_03
+    100002: arch24_050_00
+    100004: arch24_051_01
+    100006: arch24_052_00
+    100008: arch24_052_01
+    100010: arch24_052_02
+    100012: arch24_062_00
+    100014: arch24_062_01
+    100016: arch24_063_05
+    100018: arch24_063_05 1
+    100020: arch24_063_05 2
+    100022: arch24_063_05 3
+    100024: Arch46_038_1
+    100026: Arch46_057_1
+    100028: Birth 001
+    100030: Display 001
+    100032: Event 001
+    100034: Event 002
+    100036: //RootNode
+    100038: Figure 2
+    100040: Particle View 001
+    100042: Particle View 001 1
+    100044: Particle View 001 2
+    100046: Particle View 001 3
+    100048: Particle View 001 4
+    100050: Particle View 001 5
+    100052: Particle View 002
+    100054: Particle View 002 1
+    100056: Particle View 002 2
+    100058: Particle View 002 3
+    100060: Particle View 002 4
+    100062: Particle View 002 5
+    100064: Particle View 002 6
+    100066: Particle View 002 7
+    100068: Particle View 002 8
+    100070: Particle View 002 9
+    100072: Particle View 003
+    100074: Particle View 003 1
+    100076: Particle View 003 2
+    100078: Particle View 003 3
+    100080: Particle View 003 4
+    100082: Particle View 004
+    100084: Particle View 01
+    100086: Particle View 01 1
+    100088: Particle View 01 10
+    100090: Particle View 01 11
+    100092: Particle View 01 12
+    100094: Particle View 01 13
+    100096: Particle View 01 14
+    100098: Particle View 01 15
+    100100: Particle View 01 16
+    100102: Particle View 01 17
+    100104: Particle View 01 18
+    100106: Particle View 01 19
+    100108: Particle View 01 2
+    100110: Particle View 01 20
+    100112: Particle View 01 21
+    100114: Particle View 01 22
+    100116: Particle View 01 23
+    100118: Particle View 01 24
+    100120: Particle View 01 25
+    100122: Particle View 01 26
+    100124: Particle View 01 27
+    100126: Particle View 01 28
+    100128: Particle View 01 29
+    100130: Particle View 01 3
+    100132: Particle View 01 30
+    100134: Particle View 01 31
+    100136: Particle View 01 32
+    100138: Particle View 01 33
+    100140: Particle View 01 34
+    100142: Particle View 01 35
+    100144: Particle View 01 36
+    100146: Particle View 01 37
+    100148: Particle View 01 38
+    100150: Particle View 01 39
+    100152: Particle View 01 4
+    100154: Particle View 01 40
+    100156: Particle View 01 41
+    100158: Particle View 01 42
+    100160: Particle View 01 43
+    100162: Particle View 01 44
+    100164: Particle View 01 45
+    100166: Particle View 01 46
+    100168: Particle View 01 47
+    100170: Particle View 01 48
+    100172: Particle View 01 49
+    100174: Particle View 01 5
+    100176: Particle View 01 50
+    100178: Particle View 01 51
+    100180: Particle View 01 52
+    100182: Particle View 01 53
+    100184: Particle View 01 54
+    100186: Particle View 01 6
+    100188: Particle View 01 7
+    100190: Particle View 01 8
+    100192: Particle View 01 9
+    100194: Particle View 02
+    100196: Particle View 02 1
+    100198: Particle View 02 2
+    100200: Particle View 02 3
+    100202: Render 001
+    400000: arch24_032_03
+    400002: arch24_050_00
+    400004: arch24_051_01
+    400006: arch24_052_00
+    400008: arch24_052_01
+    400010: arch24_052_02
+    400012: arch24_062_00
+    400014: arch24_062_01
+    400016: arch24_063_05
+    400018: arch24_063_05 1
+    400020: arch24_063_05 2
+    400022: arch24_063_05 3
+    400024: Arch46_038_1
+    400026: Arch46_057_1
+    400028: Birth 001
+    400030: Display 001
+    400032: Event 001
+    400034: Event 002
+    400036: Figure 2
+    400038: //RootNode
+    400040: Particle View 001
+    400042: Particle View 001 1
+    400044: Particle View 001 2
+    400046: Particle View 001 3
+    400048: Particle View 001 4
+    400050: Particle View 001 5
+    400052: Particle View 002
+    400054: Particle View 002 1
+    400056: Particle View 002 2
+    400058: Particle View 002 3
+    400060: Particle View 002 4
+    400062: Particle View 002 5
+    400064: Particle View 002 6
+    400066: Particle View 002 7
+    400068: Particle View 002 8
+    400070: Particle View 002 9
+    400072: Particle View 003
+    400074: Particle View 003 1
+    400076: Particle View 003 2
+    400078: Particle View 003 3
+    400080: Particle View 003 4
+    400082: Particle View 004
+    400084: Particle View 01
+    400086: Particle View 01 1
+    400088: Particle View 01 10
+    400090: Particle View 01 11
+    400092: Particle View 01 12
+    400094: Particle View 01 13
+    400096: Particle View 01 14
+    400098: Particle View 01 15
+    400100: Particle View 01 16
+    400102: Particle View 01 17
+    400104: Particle View 01 18
+    400106: Particle View 01 19
+    400108: Particle View 01 2
+    400110: Particle View 01 20
+    400112: Particle View 01 21
+    400114: Particle View 01 22
+    400116: Particle View 01 23
+    400118: Particle View 01 24
+    400120: Particle View 01 25
+    400122: Particle View 01 26
+    400124: Particle View 01 27
+    400126: Particle View 01 28
+    400128: Particle View 01 29
+    400130: Particle View 01 3
+    400132: Particle View 01 30
+    400134: Particle View 01 31
+    400136: Particle View 01 32
+    400138: Particle View 01 33
+    400140: Particle View 01 34
+    400142: Particle View 01 35
+    400144: Particle View 01 36
+    400146: Particle View 01 37
+    400148: Particle View 01 38
+    400150: Particle View 01 39
+    400152: Particle View 01 4
+    400154: Particle View 01 40
+    400156: Particle View 01 41
+    400158: Particle View 01 42
+    400160: Particle View 01 43
+    400162: Particle View 01 44
+    400164: Particle View 01 45
+    400166: Particle View 01 46
+    400168: Particle View 01 47
+    400170: Particle View 01 48
+    400172: Particle View 01 49
+    400174: Particle View 01 5
+    400176: Particle View 01 50
+    400178: Particle View 01 51
+    400180: Particle View 01 52
+    400182: Particle View 01 53
+    400184: Particle View 01 54
+    400186: Particle View 01 6
+    400188: Particle View 01 7
+    400190: Particle View 01 8
+    400192: Particle View 01 9
+    400194: Particle View 02
+    400196: Particle View 02 1
+    400198: Particle View 02 2
+    400200: Particle View 02 3
+    400202: Render 001
+    2100000: Figure 2 metal
+    2300000: Figure 2
+    2300002: //RootNode
+    3300000: Figure 2
+    3300002: //RootNode
+    4300000: Figure 2
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Figure 2 metal
+    second: {fileID: 2100000, guid: 2370b60555090e9478eac0aeee5f9f3c, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 142894
+  packageName: Elegant Living Room
+  packageVersion: 1.3
+  assetPath: Assets/Luxurious Living room/Models/Figure 2.FBX
+  uploadId: 784292

@@ -21,7 +21,7 @@ public class Purin : MonoBehaviour
 
     private float _handleHorizontal = 0f;
     private PurinState _currentState = PurinState.Standby;
-    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.Cream };
+    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.CreamItem,GameTag.CreamAttack };
     private CollisionListener _collisionListener = null;
     private bool _hasCream = false;
     public float CurrentSpeed => _currentSpeed;
@@ -31,6 +31,9 @@ public class Purin : MonoBehaviour
     [SerializeField] private Softbody _purinModel;
     [SerializeField] private SoftbodyProperty _purinModelProperty;
     [SerializeField] private Transform _creamParent;
+
+    [SerializeField] private GameObject _creamAttackPrefab;
+    [SerializeField] private GameObject _creamAttackCollison;
     private void AutoAccelerate()
     {
         if (_purinConfig == null)
@@ -241,7 +244,7 @@ public class Purin : MonoBehaviour
                     // Todo:ÉâÉCÉtå∏è≠èàóù
                 }
                 break;
-            case GameTag.Cream:
+            case GameTag.CreamItem:
                 {
                     Debug.Log(this.name + " OnCollide with " + tag);
                     if(_hasCream)

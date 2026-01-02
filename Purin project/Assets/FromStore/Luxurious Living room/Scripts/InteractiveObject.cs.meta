@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 85489b492b324b24182b29936439241f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 142894
+  packageName: Elegant Living Room
+  packageVersion: 1.3
+  assetPath: Assets/Luxurious Living room/Scripts/InteractiveObject.cs
+  uploadId: 784292

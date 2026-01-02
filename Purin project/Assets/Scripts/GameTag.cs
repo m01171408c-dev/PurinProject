@@ -6,5 +6,6 @@ public class GameTag
     public const string Enemy = "Enemy";
     public const string Floor = "Floor";
     public const string HardObject = "Object";
-    public const string Cream = "Cream";
+    public const string CreamItem = "Cream";
+    public const string CreamAttack = "Missile";
 }
