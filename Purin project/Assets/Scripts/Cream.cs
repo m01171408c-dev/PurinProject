@@ -8,12 +8,13 @@ public class Cream : MonoBehaviour
     private bool _isDestroyed = false;
     public bool IsDestroyed => _isDestroyed;
     private int _useModelIndex = -1;
-    private float _lifetime = 5.0f; // 仮。クリームの寿命は外部から設定できるようにするかも   
+    private float _lifetime = 5.0f;
     private float _timer = 0.0f;
     private bool _isBlinking = false;
-    public void Setup()
+    public void Setup(float lifeTime)
     {
         int childCount = -1;
+        _lifetime = lifeTime;
         foreach (Transform child in transform)
         {
             child.gameObject.SetActive(false);

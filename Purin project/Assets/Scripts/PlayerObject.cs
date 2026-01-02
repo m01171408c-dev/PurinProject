@@ -78,6 +78,10 @@ public class PlayerObject : MonoBehaviour
         if (_myPurin != null)
         {
             _myPurin.SetHandleMovement(_input.Purin.Handle.ReadValue<float>());
+            if(_input.Purin.CreamAttack.WasPressedThisFrame() && _myPurin.IsCanCreamAttack())
+            {
+                _myPurin.StartCreamAttack();
+            }
             _myPurin.StateUpdate();
         }
     }

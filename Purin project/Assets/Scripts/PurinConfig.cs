@@ -25,4 +25,14 @@ public class PurinConfig : ScriptableObject
     public float KnockbackDistance => _knockbackDistance;
     public float KnockbackTime => _knckbackTime;
     public float DownTime => _downTime;
+
+    [Header("ƒvƒŠƒ“‚ÌUŒ‚Ý’è")]
+    [SerializeField] private float _attackRaduis = 4.0f;
+    [SerializeField] private float _attackTime = 1.0f;
+    [SerializeField] private GameObject _creamAttackPrefab = null;
+    [SerializeField] private float _creamAttackPrefabSize = 2.0f; //”¼Œa‚Ì”¼•ª’ö“x‚Ì‘å‚«‚³
+    public float AttackRaduis => _attackRaduis;
+    public float AttackTime => _attackTime;
+    public GameObject CreamAttackPrefab => _creamAttackPrefab;
+    public float CreamAttackPrefabSize => _creamAttackPrefabSize;
 }

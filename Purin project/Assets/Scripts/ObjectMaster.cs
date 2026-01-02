@@ -11,17 +11,17 @@ public class ObjectMaster : MonoBehaviour
     }
 
     [SerializeField] private HardObjectConfig _hardObjectConfig;
-    [SerializeField] private BoxCollider[] _spawnAreas;
+    [SerializeField] private BoxCollider[] _hardObjectSpawnAreas;
     [SerializeField] private Transform _center;
+    [SerializeField] private CreamConfig _creamConfig;
+    [SerializeField] private BoxCollider _creamSpawnArea;
 
-#if true // 仮。GameMasterなどで管理する予定
-    public static float GameProgressTime => _gameProgressTime;
-    private static float _gameProgressTime = 0;
-    private bool _isGameActive = false;
-#endif
     private List<HardObject> _objects = new List<HardObject>();
+    private List<Cream> _creams = new List<Cream>();
     private Phase _currentPhase = Phase.Phase1;
-    private float _spawnTimer = 0;
+    private float _hardObjSpawnTimer = 0;
+    private float _creamSpawnTimer = 0;
+
     public void Setup()
     {
         if (_hardObjectConfig == null)
@@ -29,7 +29,7 @@ public class ObjectMaster : MonoBehaviour
             Debug.LogError(this.name + " HardObjectConfig is not assigned.");
             return;
         }
-        if (_spawnAreas == null || _spawnAreas.Length == 0)
+        if (_hardObjectSpawnAreas == null || _hardObjectSpawnAreas.Length == 0)
         {
             Debug.LogError(this.name + " SpawnAreas are not assigned.");
             return;
@@ -39,7 +39,6 @@ public class ObjectMaster : MonoBehaviour
             Debug.LogError(this.name + " Center transform is not assigned.");
             return;
         }
-        _isGameActive = true;
     }
 
     public void MasterUpdate()
@@ -49,23 +48,54 @@ public class ObjectMaster : MonoBehaviour
             Debug.LogError(this.name + " HardObjectConfig is not assigned.");
             return;
         }
-        if (!_isGameActive) return;
-        _gameProgressTime += Time.deltaTime;
+        if (GameMain.Instance.State != GameMain.GameState.Active) return;
         for (int i = _objects.Count - 1; i >= 0; i--)
         {
             var obj = _objects[i]; 
             if (obj == null || obj.CurrentState == HardObject.HardObjectState.Destroyed)
             {
                 _objects.RemoveAt(i);
-                Destroy(obj.gameObject); // Todo：削除エフェクトの生成。
+                if(obj)
+                {
+                    Destroy(obj.gameObject); // Todo：削除エフェクトの生成。
+                }
                 continue;
             }
             obj.ActionUpdate();
         }
-        switch (_currentPhase)
+        for (int i = _creams.Count - 1; i >= 0; i--)
+        {
+            var cream = _creams[i];
+            if(cream == null || cream.IsDestroyed)
+            {
+                _creams.RemoveAt(i);
+                if(cream)
+                {
+                    Destroy(cream.gameObject);// Todo：削除エフェクトの生成。
+                }
+                continue;
+            }
+            cream.CreamActionUpdate();
+        }
+            switch (_currentPhase)
         {
             case Phase.Phase1:
                 {
+                    if(_creams.Count < _creamConfig.MaxCreamItemCount)
+                    {
+                        if(_objects.Count > _hardObjectConfig.MinHardObjectCount1)
+                        {
+                            if(_creamSpawnTimer < _creamConfig.MaxSpawnInterval)
+                            {
+                                _creamSpawnTimer += Time.deltaTime;
+                            }
+                            else
+                            {
+                                SpawnCream();
+                                _creamSpawnTimer = 0;
+                            }
+                        }
+                    }
                     if (_objects.Count < _hardObjectConfig.MinHardObjectCount1)
                     {
                         for (int i = _objects.Count; i < _hardObjectConfig.MinHardObjectCount1; i++)
@@ -76,15 +106,15 @@ public class ObjectMaster : MonoBehaviour
                     }
                     if (_objects.Count < _hardObjectConfig.MaxHardObjectCount1)
                     {
-                        if (_spawnTimer < _hardObjectConfig.MaxSpawnInterval)
+                        if (_hardObjSpawnTimer < _hardObjectConfig.MaxSpawnInterval)
                         {
-                            _spawnTimer += Time.deltaTime;
+                            _hardObjSpawnTimer += Time.deltaTime;
 
                         }
                         else
                         {
                             SpawnObjects();
-                            _spawnTimer = 0;
+                            _hardObjSpawnTimer = 0;
                         }
                     }
                 }
@@ -98,14 +128,38 @@ public class ObjectMaster : MonoBehaviour
         }
     }
 
+    private void SpawnCream()
+    {
+        if(_creamSpawnArea == null)
+        {
+            Debug.LogError(this.name + "CreamSpawnArea is not assigned.");
+            return;
+        }
+        var spawnPositionLocal = new Vector3(
+           Random.Range(-_creamSpawnArea.size.x * 0.5f, _creamSpawnArea.size.x * 0.5f),
+           Random.Range(-_creamSpawnArea.size.y * 0.5f, _creamSpawnArea.size.y * 0.5f),
+           Random.Range(-_creamSpawnArea.size.z * 0.5f, _creamSpawnArea.size.z * 0.5f));
+        var spawnPositionWorld = _creamSpawnArea.transform.TransformPoint(_creamSpawnArea.center + spawnPositionLocal);
+        spawnPositionWorld.y = 1; // 地面に合わせる
+        if(_creamConfig ==  null || _creamConfig.CreamPrefab == null)
+        {
+            Debug.LogError(this.name + " CreamConfig Prefab is not assigned.");
+            return;
+        }
+        var creamPrefab = Instantiate(_creamConfig.CreamPrefab, Vector3.zero, Quaternion.identity);
+        creamPrefab.transform.position = spawnPositionWorld;
+        var creamItem = creamPrefab.AddComponent<Cream>();
+        _creams.Add(creamItem);
+        creamItem.Setup(_creamConfig.Lifetime);
+    }
     private void SpawnObjects()
     {
-        if (_spawnAreas == null || _spawnAreas.Length == 0)
+        if (_hardObjectSpawnAreas == null || _hardObjectSpawnAreas.Length == 0)
         {
             Debug.LogError(this.name + " SpawnAreas are not assigned.");
             return;
         }
-        var spawnArea = _spawnAreas[Random.Range(0, _spawnAreas.Length)];
+        var spawnArea = _hardObjectSpawnAreas[Random.Range(0, _hardObjectSpawnAreas.Length)];
         var spawnPositionLocal = new Vector3(
             Random.Range(-spawnArea.size.x * 0.5f, spawnArea.size.x * 0.5f),
             Random.Range(-spawnArea.size.y * 0.5f, spawnArea.size.y * 0.5f),

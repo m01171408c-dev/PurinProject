@@ -21,9 +21,13 @@ public class Purin : MonoBehaviour
 
     private float _handleHorizontal = 0f;
     private PurinState _currentState = PurinState.Standby;
-    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.CreamItem,GameTag.CreamAttack };
+    private string[] _targetListenTags = { GameTag.Enemy, GameTag.HardObject, GameTag.CreamItem, GameTag.CreamAttack };
     private CollisionListener _collisionListener = null;
     private bool _hasCream = false;
+    private bool _isCreamAttackActive = false;
+    private float _creamAttackTimer = 0f;
+    private string[] _creamAttackListenTags = { GameTag.Enemy, GameTag.HardObject };
+    private CollisionListener _creamAttackCollisionListener = null;
     public float CurrentSpeed => _currentSpeed;
     public PurinState CurrentState => _currentState;
 
@@ -31,8 +35,6 @@ public class Purin : MonoBehaviour
     [SerializeField] private Softbody _purinModel;
     [SerializeField] private SoftbodyProperty _purinModelProperty;
     [SerializeField] private Transform _creamParent;
-
-    [SerializeField] private GameObject _creamAttackPrefab;
     [SerializeField] private GameObject _creamAttackCollison;
     private void AutoAccelerate()
     {
@@ -109,6 +111,70 @@ public class Purin : MonoBehaviour
         }
     }
 
+    public bool IsCanCreamAttack()
+    {
+        if (_currentState != PurinState.Moving)
+        {
+            return false;
+        }
+        if (!_hasCream)
+        {
+            return false;
+        }
+        if (_isCreamAttackActive)
+        {
+            return false;
+        }
+        return true;
+    }
+    public void StartCreamAttack()
+    {
+        if (!IsCanCreamAttack())
+        {
+            Debug.LogWarning(this.name + " Cannot perform cream attack now.");
+            return;
+        }
+        if (_creamAttackCollison == null)
+        {
+            Debug.LogError(this.name + " CreamAttackCollision prefab is not assigned.");
+            return;
+        }
+        if (_purinConfig == null || _purinConfig.CreamAttackPrefab == null)
+        {
+            Debug.LogError(this.name + " PurinConfig is null in CreamAttack");
+            return;
+        }
+        var creamAttack = GameObject.Instantiate(_purinConfig.CreamAttackPrefab, transform.position, Quaternion.identity);
+        creamAttack.transform.parent = this.transform; creamAttack.transform.localPosition = _creamParent.localPosition;
+        creamAttack.transform.localScale = Vector3.one * (_purinConfig.CreamAttackPrefabSize);
+        var particles = creamAttack.GetComponentsInChildren<ParticleSystem>();
+        foreach (var particle in particles)
+        {
+            var main = particle.main;
+            main.startLifetime = _purinConfig.AttackTime;
+            particle.Play();
+        }
+        Destroy(creamAttack, _purinConfig.AttackTime + 0.1f);
+        _creamAttackCollison.SetActive(true);
+        _isCreamAttackActive = true;
+        CreamsInvisible();
+    }
+
+    private void CreamAttckUpdate()
+    {
+        if (_isCreamAttackActive == false)
+        {
+            return;
+        }
+        _creamAttackTimer += Time.deltaTime;
+        if (_creamAttackTimer >= _purinConfig.AttackTime)
+        {
+            _creamAttackCollison.SetActive(false);
+            _isCreamAttackActive = false;
+            _creamAttackTimer = 0f;
+        }
+    }
+
     private void HandleMovement()
     {
         if (_purinConfig == null)
@@ -163,6 +229,7 @@ public class Purin : MonoBehaviour
     public void StateUpdate()
     {
         _purinModel?.AnimationUpdate();
+        CreamAttckUpdate();
         switch (_currentState)
         {
             case PurinState.Standby:
@@ -247,7 +314,7 @@ public class Purin : MonoBehaviour
             case GameTag.CreamItem:
                 {
                     Debug.Log(this.name + " OnCollide with " + tag);
-                    if(_hasCream)
+                    if (_hasCream)
                     {
                         Debug.Log(this.name + " Already has cream. Cannot take more.");
                         break;
@@ -261,12 +328,51 @@ public class Purin : MonoBehaviour
                     if (target.TryGetComponent<Cream>(out var cream))
                     {
                         int creamModelIndex = cream.PurinTakeCream();
+                        if(creamModelIndex < 0)
+                        {
+                            break;
+                        }
                         ShowMyCream(creamModelIndex);
                     }
                 }
                 break;
+                case GameTag.CreamAttack:
+                {
+                    bool isMyAttack = false;
+                    if (target.gameObject == _creamAttackCollison)
+                    {
+                        isMyAttack = true;
+                    }
+                    Debug.Log(this.name + " OnCollide with " + tag + (isMyAttack ? " My Attack" : " Enemy Attack"));
+                }
+                break;
             default:
                 Debug.LogWarning(this.name + " OnCollide with unknown tag: " + tag);
+                break;
+        }
+    }
+
+    private void CreamAttackOnCollide(string tag, Collider target)
+    {
+        switch (tag)
+        {
+            case GameTag.Enemy:
+                {
+                    Debug.Log(this.name + " CreamAttack OnCollide with " + tag);
+                }
+                break;
+            case GameTag.HardObject:
+                {
+                    Debug.Log(this.name + " CreamAttack OnCollide with " + tag);
+                    if (target.transform.parent.TryGetComponent<HardObject>(out var hardObj))
+                    {
+                        hardObj.StopAndDestroy();
+                        Debug.Log(this.name + " HardObject destroyed by CreamAttack.");
+                    }
+                }
+                break;
+            default:
+                Debug.LogWarning(this.name + " CreamAttack OnCollide with unknown tag: " + tag);
                 break;
         }
     }
@@ -284,9 +390,17 @@ public class Purin : MonoBehaviour
             Debug.LogError(this.name + " PurinModel is not assigned.");
             return false;
         }
+        if(_creamAttackCollison == null)
+        {
+            Debug.LogError(this.name + " CreamAttackCollision is not assigned.");
+            return false;
+        }
+        _creamAttackCollison.SetActive(false);
         _purinModel.SetUp(ref _purinModelProperty);
         _collisionListener = gameObject.AddComponent<CollisionListener>();
         _collisionListener.SetUp(ref _targetListenTags, OnCollide);
+        _creamAttackCollisionListener = _creamAttackCollison.AddComponent<CollisionListener>();
+        _creamAttackCollisionListener.SetUp(ref _creamAttackListenTags, CreamAttackOnCollide);
         ResetStatus();
         ChangeState(PurinState.Standby);
         return true;

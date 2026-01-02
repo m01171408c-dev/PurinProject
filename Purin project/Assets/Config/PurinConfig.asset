@@ -21,3 +21,7 @@ MonoBehaviour:
   _knockbackDistance: 6
   _knckbackTime: 1
   _downTime: 1
+  _attackRaduis: 4
+  _attackTime: 1
+  _creamAttackPrefab: {fileID: 8446608553786532089, guid: e4909b19aa4cc7b4a95d487695298a0e, type: 3}
+  _creamAttackPrefabSize: 2

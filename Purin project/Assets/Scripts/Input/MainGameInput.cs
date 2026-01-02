@@ -102,7 +102,7 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Test action"",
+                    ""name"": ""CreamAttack"",
                     ""type"": ""Button"",
                     ""id"": ""18b458e2-d22f-4473-bfdc-70cd05053828"",
                     ""expectedControlType"": """",
@@ -180,23 +180,12 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""2e9d47fe-3451-4959-8b13-6215cfea105e"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Test action"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""8653a78f-037a-4f93-a274-d2392b4d2fc8"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Test action"",
+                    ""action"": ""CreamAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -208,7 +197,7 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
         // Purin
         m_Purin = asset.FindActionMap("Purin", throwIfNotFound: true);
         m_Purin_Handle = m_Purin.FindAction("Handle", throwIfNotFound: true);
-        m_Purin_Testaction = m_Purin.FindAction("Test action", throwIfNotFound: true);
+        m_Purin_CreamAttack = m_Purin.FindAction("CreamAttack", throwIfNotFound: true);
     }
 
     ~@MainGameInput()
@@ -290,7 +279,7 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Purin;
     private List<IPurinActions> m_PurinActionsCallbackInterfaces = new List<IPurinActions>();
     private readonly InputAction m_Purin_Handle;
-    private readonly InputAction m_Purin_Testaction;
+    private readonly InputAction m_Purin_CreamAttack;
     /// <summary>
     /// Provides access to input actions defined in input action map "Purin".
     /// </summary>
@@ -307,9 +296,9 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Handle => m_Wrapper.m_Purin_Handle;
         /// <summary>
-        /// Provides access to the underlying input action "Purin/Testaction".
+        /// Provides access to the underlying input action "Purin/CreamAttack".
         /// </summary>
-        public InputAction @Testaction => m_Wrapper.m_Purin_Testaction;
+        public InputAction @CreamAttack => m_Wrapper.m_Purin_CreamAttack;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -339,9 +328,9 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
             @Handle.started += instance.OnHandle;
             @Handle.performed += instance.OnHandle;
             @Handle.canceled += instance.OnHandle;
-            @Testaction.started += instance.OnTestaction;
-            @Testaction.performed += instance.OnTestaction;
-            @Testaction.canceled += instance.OnTestaction;
+            @CreamAttack.started += instance.OnCreamAttack;
+            @CreamAttack.performed += instance.OnCreamAttack;
+            @CreamAttack.canceled += instance.OnCreamAttack;
         }
 
         /// <summary>
@@ -356,9 +345,9 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
             @Handle.started -= instance.OnHandle;
             @Handle.performed -= instance.OnHandle;
             @Handle.canceled -= instance.OnHandle;
-            @Testaction.started -= instance.OnTestaction;
-            @Testaction.performed -= instance.OnTestaction;
-            @Testaction.canceled -= instance.OnTestaction;
+            @CreamAttack.started -= instance.OnCreamAttack;
+            @CreamAttack.performed -= instance.OnCreamAttack;
+            @CreamAttack.canceled -= instance.OnCreamAttack;
         }
 
         /// <summary>
@@ -407,11 +396,11 @@ public partial class @MainGameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHandle(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Test action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "CreamAttack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnTestaction(InputAction.CallbackContext context);
+        void OnCreamAttack(InputAction.CallbackContext context);
     }
 }

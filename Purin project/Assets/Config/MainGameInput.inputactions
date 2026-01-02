@@ -16,7 +16,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Test action",
+                    "name": "CreamAttack",
                     "type": "Button",
                     "id": "18b458e2-d22f-4473-bfdc-70cd05053828",
                     "expectedControlType": "",
@@ -94,23 +94,12 @@
                 },
                 {
                     "name": "",
-                    "id": "2e9d47fe-3451-4959-8b13-6215cfea105e",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Test action",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8653a78f-037a-4f93-a274-d2392b4d2fc8",
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Test action",
+                    "action": "CreamAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
