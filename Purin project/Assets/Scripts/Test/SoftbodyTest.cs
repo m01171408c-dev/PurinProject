@@ -3,6 +3,9 @@ using UnityEngine;
 public class SoftbodyTest : Softbody
 {
     [SerializeField] private SoftbodyProperty _softbodyPropTest;
+    private int _gameRemainTime = 0;
+    private float _timeF = 0;
+    public const int PlayTime = 180;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -12,11 +15,15 @@ public class SoftbodyTest : Softbody
             return;
         }
         SetUp(ref _softbodyPropTest);
+        _gameRemainTime = PlayTime;
+        _timeF = PlayTime;
     }
 
     // Update is called once per frame
     void Update()
     {
+        _timeF -= Time.deltaTime;
+        _gameRemainTime = (int)_timeF;
         if (_softbodyPropTest == null)
         {
             Debug.LogError(this.name + " SoftbodyProperty is null");
@@ -59,6 +66,8 @@ public class SoftbodyTest : Softbody
             // Stop move animation
             SetMoving(false);
         }
+        GUILayout.Label("Remain Time = " + _gameRemainTime.ToString());
+        GUILayout.Label("Remain Time f = " + _timeF.ToString());
         GUILayout.EndArea();
     }
 }

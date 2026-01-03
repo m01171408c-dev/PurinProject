@@ -39,6 +39,7 @@ public class Purin : MonoBehaviour
     [SerializeField] private SoftbodyProperty _purinModelProperty;
     [SerializeField] private Transform _creamParent;
     [SerializeField] private GameObject _creamAttackCollison;
+    [SerializeField] private GameObject _purinCollider;
     private void AutoAccelerate()
     {
         if (_purinConfig == null)
@@ -147,6 +148,7 @@ public class Purin : MonoBehaviour
             Debug.LogError(this.name + " PurinConfig is null in CreamAttack");
             return;
         }
+        CreamsInvisible();
         var creamAttack = GameObject.Instantiate(_purinConfig.CreamAttackPrefab, transform.position, _purinConfig.CreamAttackPrefab.transform.rotation);
         creamAttack.transform.parent = this.transform; creamAttack.transform.localPosition = _creamParent.localPosition;
         creamAttack.transform.localScale = Vector3.one * (_purinConfig.CreamAttackPrefabSize);
@@ -160,7 +162,7 @@ public class Purin : MonoBehaviour
         Destroy(creamAttack, _purinConfig.AttackTime + 0.1f);
         _creamAttackCollison.SetActive(true);
         _isCreamAttackActive = true;
-        CreamsInvisible();
+        
     }
 
     private void CreamAttckUpdate()
@@ -360,15 +362,20 @@ public class Purin : MonoBehaviour
                     {
                         break;
                     }
-                    Debug.Log(this.name + " OnCollide with " + tag);
+                    Debug.Log(this.name + " OnCollide with " + tag + " " + target.gameObject.name);
                     Vector3 knockbackDir = (transform.position - target.transform.position).normalized;
+                    if(_currentState == PurinState.Moving)
+                    {
+                        Debug.Log(this.name + " life Reduced by collide HardObject");
+                        _currentLife--;
+                    }
                     KnockBack(ref knockbackDir);
-                    _currentLife--;
+                    
                 }
                 break;
             case GameTag.CreamItem:
                 {
-                    Debug.Log(this.name + " OnCollide with " + tag);
+                    Debug.Log(this.name + " OnCollide with " + tag + " " + target.gameObject.name);
                     if (_hasCream)
                     {
                         Debug.Log(this.name + " Already has cream. Cannot take more.");
@@ -473,11 +480,11 @@ public class Purin : MonoBehaviour
         }
         if (_purinConfig.SpawnEffectPrefab != null)
         {
-            var spawnEffect = GameObject.Instantiate(_purinConfig.SpawnEffectPrefab, transform.position + new Vector3(0, 1, 0), _purinConfig.SpawnEffectPrefab.transform.rotation);
+            var spawnEffect = GameObject.Instantiate(_purinConfig.SpawnEffectPrefab, transform.position, _purinConfig.SpawnEffectPrefab.transform.rotation);
             Destroy(spawnEffect, 2f);
         }
         _purinModel.SetUp(ref _purinModelProperty);
-        _collisionListener = gameObject.AddComponent<CollisionListener>();
+        _collisionListener = _purinCollider.AddComponent<CollisionListener>();
         _collisionListener.SetUp(ref _targetListenTags, OnCollide);
         _creamAttackCollisionListener = _creamAttackCollison.AddComponent<CollisionListener>();
         _creamAttackCollisionListener.SetUp(ref _creamAttackListenTags, CreamAttackOnCollide);

@@ -13,7 +13,9 @@ public class CreamConfig : ScriptableObject
     [SerializeField] private float _minSpawnInterval = 2.0f;
     [SerializeField] private float _maxSpawnInterval = 10.0f;
     [SerializeField] private int _maxCreamItemCount = 3;
+    [SerializeField] private GameObject _spawnEffect = null;
     public int MaxCreamItemCount => _maxCreamItemCount;
     public float MaxSpawnInterval => _maxSpawnInterval;
     public float MinSpawnInterval => _minSpawnInterval;
+    public GameObject SpawnEffect => _spawnEffect;
 }

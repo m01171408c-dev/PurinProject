@@ -8,6 +8,7 @@ Shader "Custom/LightPuddleAnimated"
         _Distort ("Distort Amount", Range(0,0.1)) = 0.02
         _ScaleSpeed ("Scale Speed", Range(0,1)) = 0.2
         _DistortSpeed ("Distort Speed", Range(0,1)) = 0.1
+        _RotateSpeed ("Rotate Speed", Range(-5,5)) = 1.0   // © ‰ñ“]‘¬“x’Ç‰Á
     }
 
     SubShader
@@ -29,6 +30,7 @@ Shader "Custom/LightPuddleAnimated"
             float _Distort;
             float _ScaleSpeed;
             float _DistortSpeed;
+            float _RotateSpeed;
 
             struct appdata { float4 vertex:POSITION; float2 uv:TEXCOORD0; };
             struct v2f { float4 pos:SV_POSITION; float2 uv:TEXCOORD0; };
@@ -41,11 +43,30 @@ Shader "Custom/LightPuddleAnimated"
                 return o;
             }
 
+            // UV ‰ñ“]ŠÖ”
+            float2 RotateUV(float2 uv, float angle)
+            {
+                float s = sin(angle);
+                float c = cos(angle);
+
+                // ’†S(0.5,0.5)Šî€‚Å‰ñ“]
+                uv -= 0.5;
+                float2 rotated = float2(
+                    uv.x * c - uv.y * s,
+                    uv.x * s + uv.y * c
+                );
+                return rotated + 0.5;
+            }
+
             fixed4 frag(v2f i):SV_Target
             {
                 // Œ`ó‚Ì•Ï‰»iL‚ª‚èEk‚İj
                 float scale = 1.0 + sin(_Time.y * _ScaleSpeed) * 0.05;
                 float2 uv = i.uv * scale;
+
+                // š ‰ñ“]‚ğ’Ç‰Á
+                float angle = _Time.y * _RotateSpeed;
+                uv = RotateUV(uv, angle);
 
                 // ‚ä‚ç‚¬iƒmƒCƒY‚ÅUV‚ğ—h‚ç‚·j
                 float2 noise = tex2D(_Noise, uv * 2 + _Time.y * _DistortSpeed).rg;

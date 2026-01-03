@@ -17,3 +17,4 @@ MonoBehaviour:
   _minSpawnInterval: 1
   _maxSpawnInterval: 2
   _maxCreamItemCount: 3
+  _spawnEffect: {fileID: 6931666455219453261, guid: 50d52094fd2f2c4429e8f041af0a9c3a, type: 3}

@@ -152,6 +152,12 @@ public class ObjectMaster : MonoBehaviour
         var creamItem = creamPrefab.AddComponent<Cream>();
         _creams.Add(creamItem);
         creamItem.Setup(_creamConfig.Lifetime);
+        if(_creamConfig.SpawnEffect != null)
+        {
+            var spawnEffect = GameObject.Instantiate(_creamConfig.SpawnEffect,
+                            creamPrefab.transform.position, _creamConfig.SpawnEffect.transform.rotation);
+            spawnEffect.transform.parent = creamItem.transform;
+        }
     }
     private void SpawnObjects()
     {

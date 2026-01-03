@@ -19,7 +19,7 @@ MonoBehaviour:
   _deceleration: 0.1
   _turnSpeed: 200
   _breakSpeed: 0.02
-  _knockbackDistance: 12
+  _knockbackDistance: 14
   _knckbackTime: 1
   _downTime: 1
   _attackRaduis: 16
